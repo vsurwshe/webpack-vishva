@@ -1,7 +1,7 @@
 const path = require('path')
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const webpack = require('webpack')
-
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const buildEntry = (defaultEntry, envEntry) => {
     if (!envEntry) return defaultEntry;
     const selectiveEntry = {};
@@ -20,7 +20,6 @@ module.exports = (env = {}) => {
         projectOne: "./widgets/project1/index.js",
         projectTwo: "./widgets/project2/index.js",
     }
-    console.log("Entry", envEntry);
     const entry = buildEntry(defaultEntry, envEntry);
     return {
         context: path.join(__dirname, "src"),
@@ -43,19 +42,21 @@ module.exports = (env = {}) => {
         node: {
             fs: 'empty'
         },
-        // mode: isProduction ? 'production' : 'development',
         mode: 'development',
         devServer: {
-            clientLogLevel: "silent",
-            overlay: {
-                errors: true
-            },
-            publicPath: '/dist',
+            inline: true,
+            stats: "errors-only"
         },
-        plugins: [new WriteFilePlugin(), new webpack.IgnorePlugin(/__test__/)
+        plugins: [
+            new WriteFilePlugin(),
+            new webpack.IgnorePlugin(/__test__/),
+            new HtmlWebpackPlugin()
         ],
         resolve: {
             extensions: ['.js', '.jsx'],
+            alias: {
+                __shared__: path.join(__dirname, "./src/shared")
+            }
         },
     }
 }
