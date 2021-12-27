@@ -16,12 +16,14 @@ const buildEntry = (defaultEntry, envEntry) => {
 module.exports = (env = {}) => {
     const { entry: envEntry } = env;
     const defaultEntry = {
-        sharedComoponent: path.resolve(__dirname, 'src') + "/shared",
-        projectOne: path.resolve(__dirname, 'src') + "/widgets/project1",
-        projectTwo: path.resolve(__dirname, 'src') + "/widgets/project2",
+        sharedComoponent: "./shared/index.js",
+        projectOne: "./widgets/project1/index.js",
+        projectTwo: "./widgets/project2/index.js",
     }
+    console.log("Entry", envEntry);
     const entry = buildEntry(defaultEntry, envEntry);
     return {
+        context: path.join(__dirname, "src"),
         entry,
         optimization: {
             runtimeChunk: {
@@ -29,8 +31,7 @@ module.exports = (env = {}) => {
             }
         },
         output: {
-            path: path.resolve(__dirname, path.resolve(__dirname, 'dist')),
-            // publicPath: "/src",
+            path: path.join(__dirname, 'dist'),
             filename: '[name].js'
         },
         module: {
